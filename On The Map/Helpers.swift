@@ -10,9 +10,7 @@ import Foundation
 
 class Helpers: NSObject {
     
-    /** 
-        Substitute the key for the value that is contained within the method name
-    */
+    /// Substitute the key for the value that is contained within the method name
     class func subtituteKeyInMethod(method: String, key: String, value: String) -> String? {
         
         if method.rangeOfString("{\(key)}") != nil {
@@ -22,9 +20,7 @@ class Helpers: NSObject {
         }
     }
     
-    /**
-        Given raw JSON, return a usable Foundation object
-    */
+    /// Given raw JSON, return a usable Foundation object
     class func parseJSONWithCompletionHandler(data: NSData,
         completionHandler: (result: AnyObject!, error: String?) -> Void) {
         
@@ -47,9 +43,7 @@ class Helpers: NSObject {
         }
     }
     
-    /**
-        Given a dictionary of parameters, convert to a string for a url
-    */
+    /// Given a dictionary of parameters, convert to a string for a url
     class func escapedParameters(parameters: [String : AnyObject]) -> String {
         
         var urlVars = [String]()
