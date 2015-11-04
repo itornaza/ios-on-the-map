@@ -24,6 +24,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         
         // The delegate and datasource are set on the storyboard to the table view
+        // No need to set them again in here
         
         // Add right the bar buttons
         let infoPostingButton = UIBarButtonItem(image: UIImage(named: "Pin"), style: .Plain, target: self,
@@ -41,59 +42,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.segue("LoginViewController")
     }
     
-    // MARK: - Methods
-    
-    func infoPosting() {
-        self.segue("InformationPostingViewController")
-    }
-    
-    func refreshStudents() {
-            
-            // Get the current student info
-            ParseClient.getStudentData(){ result, error in
-                
-                if error != nil {
-                    
-                    // Disiplay an alert view "Failed to download student info"
-                    self.alertView(error!)
-                    
-                } else {
-                    
-                    // Store the student's info into the appDelegate
-                    self.appDelegate.studentsInfo = result!
-                }
-            }
-            
-            // Reload the data
-            dispatch_async(dispatch_get_main_queue(), {
-                self.tableView.reloadData()
-            })
-    }
-    
-    func segue(nextVC: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            // Grab storyboard
-            let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            
-            // Get the destination controller from the storyboard id
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
-                
-            
-            // Go to the destination controller
-            self.presentViewController(nextVC, animated: true, completion: nil)
-        })
-    }
-    
-    func alertView(message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .Alert)
-            let dismiss = UIAlertAction(title: "Dismiss", style: .Default, handler: nil)
-            alertController.addAction(dismiss)
-            self.presentViewController(alertController, animated: true, completion: nil)
-        })
-    }
-    
-    // MARK: - Table view data source
+    // MARK: - Table View Delegate
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let object = UIApplication.sharedApplication().delegate
@@ -117,15 +66,64 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return cell!
     }
     
-    /**
-        When the table row is selected, open Safari to the student's link
-    */
+    /// When the table row is selected, open Safari to the student's link
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let studentUrl = self.appDelegate.studentsInfo[indexPath.row].mediaURL {
             UIApplication.sharedApplication().openURL(NSURL(string: studentUrl)!)
         } else {
             self.alertView("Student has not assigned a URL")
         }
+    }
+    
+    // MARK: - Helpers
+    
+    func infoPosting() {
+        self.segue("InformationPostingViewController")
+    }
+    
+    func refreshStudents() {
+        
+        // Get the current student info
+        ParseClient.getStudentData(){ result, error in
+            
+            if error != nil {
+                
+                // Disiplay an alert view "Failed to download student info"
+                self.alertView(error!)
+                
+            } else {
+                
+                // Store the student's info into the appDelegate
+                self.appDelegate.studentsInfo = result!
+            }
+        }
+        
+        // Reload the data
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableView.reloadData()
+        })
+    }
+    
+    // MARK: - Segues and Alerts
+    
+    func segue(nextVC: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            // Grab storyboard
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
+            // Get the destination controller from the storyboard id
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
+            // Go to the destination controller
+            self.presentViewController(nextVC, animated: true, completion: nil)
+        })
+    }
+    
+    func alertView(message: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .Alert)
+            let dismiss = UIAlertAction(title: "Dismiss", style: .Default, handler: nil)
+            alertController.addAction(dismiss)
+            self.presentViewController(alertController, animated: true, completion: nil)
+        })
     }
 
 }
