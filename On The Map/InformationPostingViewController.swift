@@ -17,6 +17,7 @@ class InformationPostingViewController: UIViewController {
     
     var annotation = MKPointAnnotation()
     var studentLink = NSURL()
+    var tapRecognizer: UITapGestureRecognizer? = nil
     
     // MARK: - Outlets
     
@@ -33,11 +34,11 @@ class InformationPostingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.configStep1()
+        self.setTapRecognizer()
     }
     
-    // MARK: Actions
+    // MARK: - Actions
     
     @IBAction func findOnTheMapButtonTouch(sender: AnyObject) {
         
@@ -111,11 +112,21 @@ class InformationPostingViewController: UIViewController {
         }
     }
     
-    // MARK: - Methods
+    // MARK: - Tap Handlers
     
-    // Initializes the activity indicator view "spinner"
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    func setTapRecognizer() {
+        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        self.view.addGestureRecognizer(tapRecognizer!)
+    }
+    
+    // MARK: - Helpers
+    
+    /// Initializes the activity indicator view "spinner"
     func initSpinner() -> UIActivityIndicatorView {
-        
         let spinner: UIActivityIndicatorView = UIActivityIndicatorView(
             activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge
         )
@@ -126,7 +137,7 @@ class InformationPostingViewController: UIViewController {
         return spinner
     }
     
-    // URL validator
+    /// URL validator
     func validateUrl(url: String) -> Bool {
         let pattern = "^(https?:\\/\\/)([a-zA-Z0-9_\\-~]+\\.)+[a-zA-Z0-9_\\-~\\/\\.]+$"
         if let _ = url.rangeOfString(pattern, options: .RegularExpressionSearch){
@@ -136,30 +147,7 @@ class InformationPostingViewController: UIViewController {
         }
     }
     
-    func showMapAndTableView() {
-        dispatch_async(dispatch_get_main_queue(), {
-            // Grab storyboard
-            let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            
-            // Get the destination controller from the storyboard id
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
-                as! UITabBarController
-            
-            // Go to the destination controller
-            self.presentViewController(nextVC, animated: false, completion: nil)
-        })
-    }
-    
-    func alertView(title: String, message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let tryAgain = UIAlertAction(title: "Try again", style: .Default, handler: nil)
-            alertController.addAction(tryAgain)
-            self.presentViewController(alertController, animated: true, completion: nil)
-        })
-    }
-    
-    // Displays the UI elements for the student's location input
+    /// Displays the UI elements for the student's location input
     func configStep1() {
         
         // Show UI elements
@@ -175,7 +163,7 @@ class InformationPostingViewController: UIViewController {
         self.mapView.hidden = true
     }
 
-    // Displays the UI elements for the student link input
+    /// Displays the UI elements for the student link input
     func configStep2() {
         
         // Show UI elements
@@ -192,7 +180,7 @@ class InformationPostingViewController: UIViewController {
 
     }
     
-    // Dims UI elements during activity
+    /// Dims UI elements during activity
     func configDuringActivity() {
         self.whereAreYouLabel.alpha = 0.5
         self.studyingLabel.alpha = 0.5
@@ -201,12 +189,36 @@ class InformationPostingViewController: UIViewController {
         self.findOnTheMapButton.alpha = 0.5
     }
     
-    // Reset the full color of UI elements after activity completes
+    /// Resets the full color of UI elements after activity completes
     func configAfterActivity() {
         self.whereAreYouLabel.alpha = 1.0
         self.studyingLabel.alpha = 1.0
         self.todayLabel.alpha = 1.0
         self.geolocationStringTextArea.alpha = 1.0
         self.findOnTheMapButton.alpha = 1.0
+    }
+    
+    // MARK: - Segues and Alerts
+    
+    /// Segue to the Map and Table View
+    func showMapAndTableView() {
+        dispatch_async(dispatch_get_main_queue(), {
+            // Grab storyboard
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
+            // Get the destination controller from the storyboard id
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
+                as! UITabBarController
+            // Go to the destination controller
+            self.presentViewController(nextVC, animated: false, completion: nil)
+        })
+    }
+    
+    func alertView(title: String, message: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            let tryAgain = UIAlertAction(title: "Try again", style: .Default, handler: nil)
+            alertController.addAction(tryAgain)
+            self.presentViewController(alertController, animated: true, completion: nil)
+        })
     }
 }
