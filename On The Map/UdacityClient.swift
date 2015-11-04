@@ -42,7 +42,7 @@ class UdacityClient: NSObject {
         let session = NSURLSession.sharedSession()
         let task =  session.dataTaskWithRequest(request) { data, response, downloadError in
             
-            if let error = downloadError {
+            if let _ = downloadError {
                 
                 // Authentication failed due to connection issues
                 completionHandler(
@@ -54,7 +54,7 @@ class UdacityClient: NSObject {
             } else {
 
                 // Get rid of the first 5 characters that Udacity places for security
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
                 
                 // 5. Parse the data
                 Helpers.parseJSONWithCompletionHandler(newData) { result, error in
@@ -141,7 +141,7 @@ class UdacityClient: NSObject {
             }
             
             // Get rid of the first 5 characters that Udacity places for security
-            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
             
             // 5. Parse the data
             Helpers.parseJSONWithCompletionHandler(newData) { result, error in

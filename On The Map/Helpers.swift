@@ -29,14 +29,18 @@ class Helpers: NSObject {
         completionHandler: (result: AnyObject!, error: String?) -> Void) {
         
         var parsingError: NSError? = nil
-        let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(
-            data,
-            options: NSJSONReadingOptions.AllowFragments,
-            error: &parsingError
-        )
+        let parsedResult: AnyObject?
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(
+                        data,
+                        options: NSJSONReadingOptions.AllowFragments)
+        } catch let error as NSError {
+            parsingError = error
+            parsedResult = nil
+        }
         
         // Set completion handler
-        if let error = parsingError {
+        if let _ = parsingError {
             completionHandler(result: nil, error: ParseClient.Constants.ParsingError)
         } else {
             completionHandler(result: parsedResult, error: nil)
@@ -65,7 +69,7 @@ class Helpers: NSObject {
             
         }
         
-        return (!urlVars.isEmpty ? "?" : "") + join("&", urlVars)
+        return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
 }

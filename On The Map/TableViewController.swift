@@ -73,11 +73,11 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func segue(nextVC: String) {
         dispatch_async(dispatch_get_main_queue(), {
             // Grab storyboard
-            var storyboard = UIStoryboard (name: "Main", bundle: nil)
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
             
             // Get the destination controller from the storyboard id
-            var nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
-                as! UIViewController
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
+                
             
             // Go to the destination controller
             self.presentViewController(nextVC, animated: true, completion: nil)
@@ -104,29 +104,27 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         // 1. Dequeue a reusable cell from the table, using the correct “reuse identifier”
-        let cell = tableView.dequeueReusableCellWithIdentifier("tableCell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("tableCell")
         
         // 2. Find the model object that corresponds to that row
-        var studentForRow = self.appDelegate.studentsInfo[indexPath.row]
+        let studentForRow = self.appDelegate.studentsInfo[indexPath.row]
         
         // 3. Set the images and labels in the cell with the data from the model object
-        cell.textLabel?.text = studentForRow.firstName + " " + studentForRow.lastName
-        cell.imageView?.image = UIImage(named: "Pin")
+        cell!.textLabel?.text = studentForRow.firstName + " " + studentForRow.lastName
+        cell!.imageView?.image = UIImage(named: "Pin")
         
         // 4. return the cell
-        return cell
+        return cell!
     }
     
     /**
         When the table row is selected, open Safari to the student's link
     */
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if self.appDelegate.studentsInfo[indexPath.row].mediaURL == nil {
-            self.alertView("Student has not assigned a URL")
+        if let studentUrl = self.appDelegate.studentsInfo[indexPath.row].mediaURL {
+            UIApplication.sharedApplication().openURL(NSURL(string: studentUrl)!)
         } else {
-            UIApplication.sharedApplication().openURL(NSURL(
-                string: self.appDelegate.studentsInfo[indexPath.row].mediaURL)!
-            )
+            self.alertView("Student has not assigned a URL")
         }
     }
 

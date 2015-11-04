@@ -10,6 +10,10 @@ import UIKit
 
 class LoginViewController: UIViewController {
 
+    // MARK: - Properties
+    
+    var tapRecognizer: UITapGestureRecognizer? = nil
+    
     // MARK: - Outlets
     
     @IBOutlet weak var emailTextField: UITextField!
@@ -22,6 +26,9 @@ class LoginViewController: UIViewController {
         
         // Clear the delegate temp variables on init and after each logout
         self.resetAppDelegate()
+        
+        // Configure the tap recocnizer
+        self.setTapRecognizer()
     }
     
     // MARK: - Actions
@@ -29,14 +36,14 @@ class LoginViewController: UIViewController {
     @IBAction func loginButtonTouch(sender: AnyObject) {
         
         // Require username
-        if emailTextField.text.isEmpty {
+        if emailTextField.text!.isEmpty {
             self.alertView(
                 UdacityClient.AuthenticationStatus.LoginFailed,
                 message: "Email is empty"
             )
             
         // Require password
-        } else if passwordTextField.text.isEmpty {
+        } else if passwordTextField.text!.isEmpty {
             self.alertView(
                 UdacityClient.AuthenticationStatus.LoginFailed,
                 message: "Password is empty"
@@ -62,7 +69,7 @@ class LoginViewController: UIViewController {
     func resetAppDelegate() {
         
         // Get the App Delegate
-        var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         // Reset the udacity student data
         appDelegate.key = ""
@@ -70,11 +77,20 @@ class LoginViewController: UIViewController {
         appDelegate.lastName = ""
     }
     
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    func setTapRecognizer() {
+        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        self.view.addGestureRecognizer(tapRecognizer!)
+    }
+    
     /**
         Authenticate against the Udacity API
     */
     func authenticate() {
-        UdacityClient.authenticate(emailTextField.text, password: passwordTextField.text) { success, errorString in
+        UdacityClient.authenticate(emailTextField.text!, password: passwordTextField.text!) { success, errorString in
             if success == true {
                 self.showMapAndTableTabbedView()
             } else if (errorString != nil) {
@@ -105,10 +121,10 @@ class LoginViewController: UIViewController {
     func showMapAndTableTabbedView() {
         dispatch_async(dispatch_get_main_queue(), {
             // Grab storyboard
-            var storyboard = UIStoryboard (name: "Main", bundle: nil)
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
             
             // Get the destination controller from the storyboard id
-            var nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
                 as! UITabBarController
             
             // Go to the destination controller

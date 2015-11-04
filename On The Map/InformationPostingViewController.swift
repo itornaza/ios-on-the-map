@@ -47,9 +47,9 @@ class InformationPostingViewController: UIViewController {
         
         // Perform the forward geolocation
         CLGeocoder().geocodeAddressString(self.geolocationStringTextArea.text, completionHandler: {
-            (placemarks: [AnyObject]!, error: NSError!) in
+            (placemarks: [CLPlacemark]?, error: NSError?) in
             
-            if error != nil || placemarks.count == 0 {
+            if error != nil || placemarks!.count == 0 {
                 
                 // Throw an alert view and stay on this step to allow re-entry
                 self.alertView("Geolocation failed", message: "Invalid address")
@@ -57,17 +57,17 @@ class InformationPostingViewController: UIViewController {
             } else {
                 
                 // Get the first placemarks coordinates
-                let placemark = placemarks[0] as! CLPlacemark
+                let placemark = placemarks![0] 
                 
                 // Assign the coordinates to the annotation
-                self.annotation.coordinate.latitude = placemark.location.coordinate.latitude
-                self.annotation.coordinate.longitude = placemark.location.coordinate.longitude
+                self.annotation.coordinate.latitude = placemark.location!.coordinate.latitude
+                self.annotation.coordinate.longitude = placemark.location!.coordinate.longitude
                 
                 // Add the annotation to the map
                 self.mapView.addAnnotation(self.annotation)
                 
                 // Zoom the map near the student's annotation using the MKMapCamera
-                var mapCamera = MKMapCamera(lookingAtCenterCoordinate: self.annotation.coordinate,
+                let mapCamera = MKMapCamera(lookingAtCenterCoordinate: self.annotation.coordinate,
                     fromEyeCoordinate: self.annotation.coordinate, eyeAltitude: 1000)
                 self.mapView.setCamera(mapCamera, animated: true)
                 
@@ -93,7 +93,7 @@ class InformationPostingViewController: UIViewController {
             self.studentLink = NSURL(string: self.studentLinkTextArea.text)!
             
             // Prepare post attributes
-            let studentLink: String = self.studentLink.absoluteString!
+            let studentLink: String = self.studentLink.absoluteString
             let mapString: String = self.geolocationStringTextArea.text
             let latitude: Double = self.annotation.coordinate.latitude as Double
             let longitude: Double = self.annotation.coordinate.longitude as Double
@@ -129,7 +129,7 @@ class InformationPostingViewController: UIViewController {
     // URL validator
     func validateUrl(url: String) -> Bool {
         let pattern = "^(https?:\\/\\/)([a-zA-Z0-9_\\-~]+\\.)+[a-zA-Z0-9_\\-~\\/\\.]+$"
-        if let match = url.rangeOfString(pattern, options: .RegularExpressionSearch){
+        if let _ = url.rangeOfString(pattern, options: .RegularExpressionSearch){
             return true
         } else {
             return false
@@ -139,10 +139,10 @@ class InformationPostingViewController: UIViewController {
     func showMapAndTableView() {
         dispatch_async(dispatch_get_main_queue(), {
             // Grab storyboard
-            var storyboard = UIStoryboard (name: "Main", bundle: nil)
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
             
             // Get the destination controller from the storyboard id
-            var nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
                 as! UITabBarController
             
             // Go to the destination controller
