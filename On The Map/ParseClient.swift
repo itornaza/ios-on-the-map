@@ -45,7 +45,7 @@ class ParseClient: NSObject {
             }
             
             // 5. Parse the data
-            Helpers.parseJSONWithCompletionHandler(data) { result, error in
+            Helpers.parseJSONWithCompletionHandler(data!) { result, error in
                 
                 if error != nil {
                     completionHandler(
@@ -56,7 +56,7 @@ class ParseClient: NSObject {
                 }
                 
                 // 6. Use the data
-                if let objectId = result!.valueForKey(ParseClient.JSONResponseKeys.ObjectID) as? String {
+                if let _ = result!.valueForKey(ParseClient.JSONResponseKeys.ObjectID) as? String {
                     completionHandler(success: true, errorString: nil)
                 }
             }
@@ -77,7 +77,7 @@ class ParseClient: NSObject {
         // 2. Build the URL
         let urlString = ParseClient.Constants.BaseURLSecure + ParseClient.Methods.StudentLocation +
             Helpers.escapedParameters(methodParameters)
-        let url = NSURL(string: urlString)!
+        _ = NSURL(string: urlString)!
         
         // 3. Configure the request
         let request = NSMutableURLRequest(URL: NSURL(string: urlString)!)
@@ -94,7 +94,7 @@ class ParseClient: NSObject {
             }
             
             // 5. Parse the data
-            Helpers.parseJSONWithCompletionHandler(data) { result, error in
+            Helpers.parseJSONWithCompletionHandler(data!) { result, error in
                 
                 if error != nil {
                     completionHandler(result: nil, error: error)

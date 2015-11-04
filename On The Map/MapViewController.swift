@@ -69,7 +69,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 for student in appDelegate.studentsInfo {
                     
                     // Create the annotation
-                    var annotation = MKPointAnnotation()
+                    let annotation = MKPointAnnotation()
                     
                     // Set the annotation attributes from the StudentInfo struct
                     annotation.coordinate = student.coordinate
@@ -103,10 +103,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func segue(nextVC: String) {
         dispatch_async(dispatch_get_main_queue(), {
             // Grab storyboard
-            var storyboard = UIStoryboard (name: "Main", bundle: nil)
+            let storyboard = UIStoryboard (name: "Main", bundle: nil)
             
             // Get the destination controller from the storyboard id
-            var nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC) as! UIViewController
+            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC) 
             
             // Go to the destination controller
             self.presentViewController(nextVC, animated: true, completion: nil)
@@ -125,7 +125,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Map View Delegate
     
     // Put the "info button" on the right side of each pin
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
         
@@ -135,7 +135,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         }
         else {
             pinView!.annotation = annotation
@@ -145,12 +145,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     // When the "info button" is tapped open Safari to the student's link
-    func mapView(mapView: MKMapView!, annotationView: MKAnnotationView,
+    func mapView(mapView: MKMapView, annotationView: MKAnnotationView,
         calloutAccessoryControlTapped control: UIControl) {
         
         if control == annotationView.rightCalloutAccessoryView {
             let app = UIApplication.sharedApplication()
-            app.openURL(NSURL(string: annotationView.annotation.subtitle!)!)
+            app.openURL(NSURL(string: annotationView.annotation!.subtitle!!)!)
         }
     }
     
