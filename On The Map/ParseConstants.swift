@@ -13,11 +13,11 @@ extension ParseClient {
     // MARK: - Constants
     
     struct Constants {
-        static let BaseURLSecure: String = "https://api.parse.com/1/classes/"
-        static let ParseApplicationID: String = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
-        static let RESTAPIKey: String = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
-        static let FailedConnection: String = "Connection Failure"
-        static let ParsingError: String = "Cannot parse the student information"
+        static let BaseURLSecure: String        = "https://api.parse.com/1/classes/"
+        static let ParseApplicationID: String   = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
+        static let RESTAPIKey: String           = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
+        static let FailedConnection: String     = "Connection Failure"
+        static let ParsingError: String         = "Cannot parse the student information"
     }
     
     // MARK: - Methods
@@ -41,22 +41,21 @@ extension ParseClient {
     // MARK: - JSON Response Keys
     
     struct JSONResponseKeys {
-        static let Results: String = "results"
+        static let Results: String      = "results"
         
-        static let FirstName: String = "firstName"
-        static let LastName: String = "lastName"
+        static let FirstName: String    = "firstName"
+        static let LastName: String     = "lastName"
         
-        static let ObjectID: String = "objectId"
-        static let UniqueKey: String = "uniqueKey"
+        static let ObjectID: String     = "objectId"
+        static let UniqueKey: String    = "uniqueKey"
 
-        static let Lat: String = "latitude"
-        static let Long: String = "longitude"
-        static let MediaURL: String = "mediaURL"
-        static let MapString: String = "mapString"
+        static let Lat: String          = "latitude"
+        static let Long: String         = "longitude"
+        static let MediaURL: String     = "mediaURL"
+        static let MapString: String    = "mapString"
         
-        static let CreatedAt: String = "createdAt"
-        static let UpdatedAt: String = "updatedAt"
-        
+        static let CreatedAt: String    = "createdAt"
+        static let UpdatedAt: String    = "updatedAt"
     }
     
 }

@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController {
     
     // MARK: - Properties
     
@@ -43,38 +43,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBAction func logout(sender: AnyObject) {
         self.segue("LoginViewController")
-    }
-    
-    // MARK: - Map View Delegate
-    
-    // Put the "info button" on the right side of each pin
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        let reuseId = "pin"
-        
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
-        
-        if pinView == nil {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView!.canShowCallout = true
-            pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
-        }
-        else {
-            pinView!.annotation = annotation
-        }
-        
-        return pinView
-    }
-    
-    // When the "info button" is tapped open Safari to the student's link
-    func mapView(mapView: MKMapView, annotationView: MKAnnotationView,
-        calloutAccessoryControlTapped control: UIControl) {
-            
-            if control == annotationView.rightCalloutAccessoryView {
-                let app = UIApplication.sharedApplication()
-                app.openURL(NSURL(string: annotationView.annotation!.subtitle!!)!)
-            }
     }
     
     // MARK: - Helpers
@@ -153,5 +121,37 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             self.presentViewController(alertController, animated: true, completion: nil)
         })
     }
-    
+}
+
+extension MapViewController: MKMapViewDelegate {
+
+    // Put the "info button" on the right side of each pin
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinColor = .Red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+
+    // When the "info button" is tapped open Safari to the student's link
+    func mapView(mapView: MKMapView, annotationView: MKAnnotationView,
+                 calloutAccessoryControlTapped control: UIControl) {
+        
+        if control == annotationView.rightCalloutAccessoryView {
+            let app = UIApplication.sharedApplication()
+            app.openURL(NSURL(string: annotationView.annotation!.subtitle!!)!)
+        }
+    }
 }

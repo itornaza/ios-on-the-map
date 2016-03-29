@@ -15,11 +15,11 @@ extension UdacityClient {
     struct AuthenticationStatus {
         static let Success: Bool = true
         static let Failure: Bool = false
-        static let LoginFailed: String = "Login failed"
-        static let InvalidCredentials: String = "Invalid Credentials"
-        static let FailedConnection: String = "Connection Failure"
-        static let ParseError: String = "Cannot parse the student information"
-        static let StudentDataFailed: String = "Could not retrieve first and last student's name"
+        static let LoginFailed: String          = "Login failed"
+        static let InvalidCredentials: String   = "Invalid Credentials"
+        static let FailedConnection: String     = "Connection Failure"
+        static let ParseError: String           = "Cannot parse the student information"
+        static let StudentDataFailed: String    = "Could not retrieve first and last student's name"
     }
     
     struct Constants {
@@ -30,14 +30,14 @@ extension UdacityClient {
     // MARK: - Methods
     
     struct Methods {
-        static let Session: String = "session"
-        static let Users: String = "users"
+        static let Session: String  = "session"
+        static let Users: String    = "users"
     }
     
     // MARK: - Parameter Keys
     
     struct ParameterKeys {
-        static let Email: String = "username"
+        static let Email: String    = "username"
         static let Password: String = "password"
     }
     
@@ -46,27 +46,27 @@ extension UdacityClient {
     struct JSONResponseKeys {
         
         // MARK: - Timing
-        static let CurrentTime: String = "current_time"
+        static let CurrentTime: String              = "current_time"
         static let CurrentSecondsSinceEpoch: String = "current_seconds_since_epoch"
         
         // MARK: - Acount
-        static let Account: String = "account"
-        static let Registered: String = "registered"
+        static let Account: String      = "account"
+        static let Registered: String   = "registered"
         
         // MARK: - User
-        static let User: String = "user"
-        static let Key: String = "key"
-        static let FirstName: String = "first_name"
-        static let LastName: String = "last_name"
+        static let User: String         = "user"
+        static let Key: String          = "key"
+        static let FirstName: String    = "first_name"
+        static let LastName: String     = "last_name"
         
         // MARK: - Session
-        static let Session: String = "session"
-        static let ID: String = "id"
-        static let Expiration: String = "expiration"
+        static let Session: String      = "session"
+        static let ID: String           = "id"
+        static let Expiration: String   = "expiration"
         
         // MARK: - Error
-        static let Error: String = "error"
-        static let Status: String = "status"
+        static let Error: String        = "error"
+        static let Status: String       = "status"
         static let ErrorStatus: Int = 403
     }
 }
