@@ -119,7 +119,7 @@ class InformationPostingViewController: UIViewController {
     }
     
     func setTapRecognizer() {
-        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(InformationPostingViewController.handleSingleTap(_:)))
         self.view.addGestureRecognizer(tapRecognizer!)
     }
     

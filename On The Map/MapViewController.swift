@@ -28,10 +28,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         // Add right the bar buttons
         let infoPostingButton = UIBarButtonItem(image: UIImage(named: "Pin"), style: .Plain, target: self,
-            action: "infoPosting"
+            action: #selector(MapViewController.infoPosting)
         )
         let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self,
-            action: "refreshStudents"
+            action: #selector(MapViewController.refreshStudents)
         )
         navigationItem.setRightBarButtonItems([refreshButton, infoPostingButton], animated: true)
      

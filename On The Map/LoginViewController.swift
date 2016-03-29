@@ -82,7 +82,7 @@ class LoginViewController: UIViewController {
     }
     
     func setTapRecognizer() {
-        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.handleSingleTap(_:)))
         self.view.addGestureRecognizer(tapRecognizer!)
     }
     
