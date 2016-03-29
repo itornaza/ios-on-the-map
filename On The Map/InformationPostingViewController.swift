@@ -85,7 +85,7 @@ class InformationPostingViewController: UIViewController {
     
     @IBAction func submitButtonTouch(sender: AnyObject) {
         
-        // Check if the student link is valid.
+        // Check if the student link is valid
         if !self.validateUrl(self.studentLinkTextArea.text) {
             self.alertView("Validation failed", message: "Invalid URL: \(self.studentLinkTextArea.text)")
         } else {
@@ -203,12 +203,9 @@ class InformationPostingViewController: UIViewController {
     /// Segue to the Map and Table View
     func showMapAndTableView() {
         dispatch_async(dispatch_get_main_queue(), {
-            // Grab storyboard
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            // Get the destination controller from the storyboard id
             let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
                 as! UITabBarController
-            // Go to the destination controller
             self.presentViewController(nextVC, animated: false, completion: nil)
         })
     }

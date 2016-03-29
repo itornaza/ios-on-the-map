@@ -21,9 +21,7 @@ struct StudentInfo {
     
     // MARK: - Constructors
     
-    /**
-        Construct a StudentInfo from a dictionary
-    */
+    /// Construct a StudentInfo from a dictionary
     init(dictionary: [String:AnyObject]) {
         
         // Local variables
@@ -42,17 +40,12 @@ struct StudentInfo {
     
     // MARK: - Methods
     
-    /**
-        Given an array of dictionaries, convert them to an array of StudentInfo objects
-    */
+    /// Given an array of dictionaries, convert them to an array of StudentInfo objects
     static func studentInfoFromResults(results: [[String:AnyObject]]) -> [StudentInfo] {
-        
         var studentsInfo = [StudentInfo]()
-        
         for result in results {
             studentsInfo.append(StudentInfo(dictionary: result))
         }
-        
         return studentsInfo
     }
 }

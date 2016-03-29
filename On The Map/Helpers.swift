@@ -12,7 +12,6 @@ class Helpers: NSObject {
     
     /// Substitute the key for the value that is contained within the method name
     class func subtituteKeyInMethod(method: String, key: String, value: String) -> String? {
-        
         if method.rangeOfString("{\(key)}") != nil {
             return method.stringByReplacingOccurrencesOfString("{\(key)}", withString: value)
         } else {
@@ -45,9 +44,7 @@ class Helpers: NSObject {
     
     /// Given a dictionary of parameters, convert to a string for a url
     class func escapedParameters(parameters: [String : AnyObject]) -> String {
-        
         var urlVars = [String]()
-        
         for (key, value) in parameters {
             
             // Make sure that it is a string value
@@ -62,7 +59,6 @@ class Helpers: NSObject {
             urlVars += [key + "=" + "\(escapedValue!)"]
             
         }
-        
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     

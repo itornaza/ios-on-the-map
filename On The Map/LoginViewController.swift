@@ -55,17 +55,14 @@ class LoginViewController: UIViewController {
         }
     }
     
+    /// Open Safari to the udacity link
     @IBAction func SignUpButtonTouch(sender: AnyObject) {
-
-        // Open Safari to the udacity link
         UIApplication.sharedApplication().openURL(NSURL(string:UdacityClient.Constants.UdacitySignUp)!)
     }
     
     // MARK: - Methods
     
-    /** 
-        Clear the appDelegate variables after a logout occurs
-    */
+    /// Clear the appDelegate variables after a logout occurs
     func resetAppDelegate() {
         
         // Get the App Delegate
@@ -86,9 +83,7 @@ class LoginViewController: UIViewController {
         self.view.addGestureRecognizer(tapRecognizer!)
     }
     
-    /**
-        Authenticate against the Udacity API
-    */
+    /// Authenticate against the Udacity API
     func authenticate() {
         UdacityClient.authenticate(emailTextField.text!, password: passwordTextField.text!) { success, errorString in
             if success == true {
@@ -115,19 +110,12 @@ class LoginViewController: UIViewController {
         })
     }
     
-    /**
-        Segue to the "Map and Table Tabbed View" on the main thread (UIKit restriction)
-    */
+    /// Segue to the "Map and Table Tabbed View" on the main thread (UIKit restriction)
     func showMapAndTableTabbedView() {
         dispatch_async(dispatch_get_main_queue(), {
-            // Grab storyboard
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            
-            // Get the destination controller from the storyboard id
             let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
                 as! UITabBarController
-            
-            // Go to the destination controller
             self.presentViewController(nextVC, animated: false, completion: nil)
         })
     }

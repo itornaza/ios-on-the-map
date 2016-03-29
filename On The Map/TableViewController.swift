@@ -27,12 +27,18 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // No need to set them again in here
         
         // Add right the bar buttons
-        let infoPostingButton = UIBarButtonItem(image: UIImage(named: "Pin"), style: .Plain, target: self,
-            action: "infoPosting"
+        let infoPostingButton = UIBarButtonItem(
+            image: UIImage(named: "Pin"),
+            style: .Plain,
+            target: self,
+            action: #selector(TableViewController.infoPosting)
         )
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self,
-            action: "refreshStudents"
+        let refreshButton = UIBarButtonItem(
+            barButtonSystemItem: UIBarButtonSystemItem.Refresh,
+            target: self,
+            action: #selector(TableViewController.refreshStudents)
         )
+        
         navigationItem.setRightBarButtonItems([refreshButton, infoPostingButton], animated: true)
     }
 
@@ -108,11 +114,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func segue(nextVC: String) {
         dispatch_async(dispatch_get_main_queue(), {
-            // Grab storyboard
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            // Get the destination controller from the storyboard id
             let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
-            // Go to the destination controller
             self.presentViewController(nextVC, animated: true, completion: nil)
         })
     }

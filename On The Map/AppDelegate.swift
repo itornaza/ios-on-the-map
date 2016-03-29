@@ -12,7 +12,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
     var studentsInfo: [StudentInfo]!
     var key: String = ""
     var firstName: String = ""
