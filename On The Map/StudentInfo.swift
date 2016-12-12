@@ -41,7 +41,7 @@ struct StudentInfo {
     // MARK: - Methods
     
     /// Given an array of dictionaries, convert them to an array of StudentInfo objects
-    static func studentInfoFromResults(results: [[String:AnyObject]]) -> [StudentInfo] {
+    static func studentInfoFromResults(_ results: [[String:AnyObject]]) -> [StudentInfo] {
         var studentsInfo = [StudentInfo]()
         for result in results {
             studentsInfo.append(StudentInfo(dictionary: result))

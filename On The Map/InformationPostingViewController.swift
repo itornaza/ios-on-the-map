@@ -16,7 +16,7 @@ class InformationPostingViewController: UIViewController {
     // MARK: - Properties
     
     var annotation = MKPointAnnotation()
-    var studentLink = NSURL()
+    var studentLink: URL!
     var tapRecognizer: UITapGestureRecognizer? = nil
     
     // MARK: - Outlets
@@ -40,7 +40,7 @@ class InformationPostingViewController: UIViewController {
     
     // MARK: - Actions
     
-    @IBAction func findOnTheMapButtonTouch(sender: AnyObject) {
+    @IBAction func findOnTheMapButtonTouch(_ sender: AnyObject) {
         
         // Start the activity indicator view
         let spinner = self.initSpinner()
@@ -68,7 +68,7 @@ class InformationPostingViewController: UIViewController {
                 self.mapView.addAnnotation(self.annotation)
                 
                 // Zoom the map near the student's annotation using the MKMapCamera
-                let mapCamera = MKMapCamera(lookingAtCenterCoordinate: self.annotation.coordinate,
+                let mapCamera = MKMapCamera(lookingAtCenter: self.annotation.coordinate,
                     fromEyeCoordinate: self.annotation.coordinate, eyeAltitude: 1000)
                 self.mapView.setCamera(mapCamera, animated: true)
                 
@@ -79,11 +79,11 @@ class InformationPostingViewController: UIViewController {
             // Stop the activity indicator view
             spinner.stopAnimating()
             self.configAfterActivity()
-        })
+        } as! CLGeocodeCompletionHandler)
         
     }
     
-    @IBAction func submitButtonTouch(sender: AnyObject) {
+    @IBAction func submitButtonTouch(_ sender: AnyObject) {
         
         // Check if the student link is valid
         if !self.validateUrl(self.studentLinkTextArea.text) {
@@ -91,7 +91,7 @@ class InformationPostingViewController: UIViewController {
         } else {
             
             // Capture the student's link
-            self.studentLink = NSURL(string: self.studentLinkTextArea.text)!
+            self.studentLink = URL(string: self.studentLinkTextArea.text)!
             
             // Prepare post attributes
             let studentLink: String = self.studentLink.absoluteString
@@ -114,7 +114,7 @@ class InformationPostingViewController: UIViewController {
     
     // MARK: - Tap Handlers
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+    func handleSingleTap(_ recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
     
@@ -128,7 +128,7 @@ class InformationPostingViewController: UIViewController {
     /// Initializes the activity indicator view "spinner"
     func initSpinner() -> UIActivityIndicatorView {
         let spinner: UIActivityIndicatorView = UIActivityIndicatorView(
-            activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge
+            activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge
         )
         spinner.center = self.view.center
         spinner.startAnimating()
@@ -138,9 +138,9 @@ class InformationPostingViewController: UIViewController {
     }
     
     /// URL validator
-    func validateUrl(url: String) -> Bool {
+    func validateUrl(_ url: String) -> Bool {
         let pattern = "^(https?:\\/\\/)([a-zA-Z0-9_\\-~]+\\.)+[a-zA-Z0-9_\\-~\\/\\.]+$"
-        if let _ = url.rangeOfString(pattern, options: .RegularExpressionSearch){
+        if let _ = url.range(of: pattern, options: .regularExpression){
             return true
         } else {
             return false
@@ -151,32 +151,32 @@ class InformationPostingViewController: UIViewController {
     func configStep1() {
         
         // Show UI elements
-        self.whereAreYouLabel.hidden = false
-        self.studyingLabel.hidden = false
-        self.todayLabel.hidden = false
-        self.geolocationStringTextArea.hidden = false
-        self.findOnTheMapButton.hidden = false
+        self.whereAreYouLabel.isHidden = false
+        self.studyingLabel.isHidden = false
+        self.todayLabel.isHidden = false
+        self.geolocationStringTextArea.isHidden = false
+        self.findOnTheMapButton.isHidden = false
         
         // Hide UI elements
-        self.studentLinkTextArea.hidden = true
-        self.submitButton.hidden = true
-        self.mapView.hidden = true
+        self.studentLinkTextArea.isHidden = true
+        self.submitButton.isHidden = true
+        self.mapView.isHidden = true
     }
 
     /// Displays the UI elements for the student link input
     func configStep2() {
         
         // Show UI elements
-        self.whereAreYouLabel.hidden = true
-        self.studyingLabel.hidden = true
-        self.todayLabel.hidden = true
-        self.geolocationStringTextArea.hidden = true
-        self.findOnTheMapButton.hidden = true
+        self.whereAreYouLabel.isHidden = true
+        self.studyingLabel.isHidden = true
+        self.todayLabel.isHidden = true
+        self.geolocationStringTextArea.isHidden = true
+        self.findOnTheMapButton.isHidden = true
         
         // Hide UI elements
-        self.studentLinkTextArea.hidden = false
-        self.submitButton.hidden = false
-        self.mapView.hidden = false
+        self.studentLinkTextArea.isHidden = false
+        self.submitButton.isHidden = false
+        self.mapView.isHidden = false
 
     }
     
@@ -202,20 +202,20 @@ class InformationPostingViewController: UIViewController {
     
     /// Segue to the Map and Table View
     func showMapAndTableView() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
+            let nextVC = storyboard.instantiateViewController(withIdentifier: "MapAndTableTabbedView")
                 as! UITabBarController
-            self.presentViewController(nextVC, animated: false, completion: nil)
+            self.present(nextVC, animated: false, completion: nil)
         })
     }
     
-    func alertView(title: String, message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let tryAgain = UIAlertAction(title: "Try again", style: .Default, handler: nil)
+    func alertView(_ title: String, message: String) {
+        DispatchQueue.main.async(execute: {
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let tryAgain = UIAlertAction(title: "Try again", style: .default, handler: nil)
             alertController.addAction(tryAgain)
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         })
     }
 }

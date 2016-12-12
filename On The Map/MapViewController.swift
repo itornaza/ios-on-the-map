@@ -27,10 +27,10 @@ class MapViewController: UIViewController {
         // The controler is set to be delegate to mapView on the Storyboard
         
         // Add right the bar buttons
-        let infoPostingButton = UIBarButtonItem(image: UIImage(named: "Pin"), style: .Plain, target: self,
+        let infoPostingButton = UIBarButtonItem(image: UIImage(named: "Pin"), style: .plain, target: self,
             action: #selector(MapViewController.infoPosting)
         )
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self,
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.refresh, target: self,
             action: #selector(MapViewController.refreshStudents)
         )
         navigationItem.setRightBarButtonItems([refreshButton, infoPostingButton], animated: true)
@@ -41,7 +41,7 @@ class MapViewController: UIViewController {
     
     // MARK: - Actions
     
-    @IBAction func logout(sender: AnyObject) {
+    @IBAction func logout(_ sender: AnyObject) {
         self.segue("LoginViewController")
     }
     
@@ -60,7 +60,7 @@ class MapViewController: UIViewController {
             } else {
                 
                 // Assign it to the delegate in order to access it from the table as well
-                let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 
                 // Get the sudents info from using the Parse API
                 appDelegate.studentsInfo = result!
@@ -81,7 +81,7 @@ class MapViewController: UIViewController {
                 }
                 
                 // Add the annotations to the map
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.mapView.addAnnotations(self.annotations)
                 })
             }
@@ -102,23 +102,23 @@ class MapViewController: UIViewController {
     
     // MARK: - Segues and Alerts
     
-    func segue(nextVC: String) {
-        dispatch_async(dispatch_get_main_queue(), {
+    func segue(_ nextVC: String) {
+        DispatchQueue.main.async(execute: {
             // Grab storyboard
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
             // Get the destination controller from the storyboard id
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
+            let nextVC = storyboard.instantiateViewController(withIdentifier: nextVC)
             // Go to the destination controller
-            self.presentViewController(nextVC, animated: true, completion: nil)
+            self.present(nextVC, animated: true, completion: nil)
         })
     }
     
-    func alertView(message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .Alert)
-            let dismiss = UIAlertAction(title: "Dismiss", style: .Default, handler: nil)
+    func alertView(_ message: String) {
+        DispatchQueue.main.async(execute: {
+            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .alert)
+            let dismiss = UIAlertAction(title: "Dismiss", style: .default, handler: nil)
             alertController.addAction(dismiss)
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         })
     }
 }
@@ -126,17 +126,17 @@ class MapViewController: UIViewController {
 extension MapViewController: MKMapViewDelegate {
 
     // Put the "info button" on the right side of each pin
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.pinColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else {
             pinView!.annotation = annotation
@@ -146,12 +146,12 @@ extension MapViewController: MKMapViewDelegate {
     }
 
     // When the "info button" is tapped open Safari to the student's link
-    func mapView(mapView: MKMapView, annotationView: MKAnnotationView,
+    func mapView(_ mapView: MKMapView, annotationView: MKAnnotationView,
                  calloutAccessoryControlTapped control: UIControl) {
         
         if control == annotationView.rightCalloutAccessoryView {
-            let app = UIApplication.sharedApplication()
-            app.openURL(NSURL(string: annotationView.annotation!.subtitle!!)!)
+            let app = UIApplication.shared
+            app.openURL(URL(string: annotationView.annotation!.subtitle!!)!)
         }
     }
 }

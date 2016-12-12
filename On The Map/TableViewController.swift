@@ -12,7 +12,7 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     // MARK: - Properties
     
-    var appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     // MARK: - Outlets
     
@@ -29,12 +29,12 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // Add right the bar buttons
         let infoPostingButton = UIBarButtonItem(
             image: UIImage(named: "Pin"),
-            style: .Plain,
+            style: .plain,
             target: self,
             action: #selector(TableViewController.infoPosting)
         )
         let refreshButton = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonSystemItem.Refresh,
+            barButtonSystemItem: UIBarButtonSystemItem.refresh,
             target: self,
             action: #selector(TableViewController.refreshStudents)
         )
@@ -44,25 +44,25 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     // MARK: - Actions
     
-    @IBAction func logout(sender: AnyObject) {
+    @IBAction func logout(_ sender: AnyObject) {
         self.segue("LoginViewController")
     }
     
     // MARK: - Table View Delegate
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let object = UIApplication.sharedApplication().delegate
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
         return appDelegate.studentsInfo.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // 1. Dequeue a reusable cell from the table, using the correct “reuse identifier”
-        let cell = tableView.dequeueReusableCellWithIdentifier("tableCell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell")
         
         // 2. Find the model object that corresponds to that row
-        let studentForRow = self.appDelegate.studentsInfo[indexPath.row]
+        let studentForRow = self.appDelegate.studentsInfo[(indexPath as NSIndexPath).row]
         
         // 3. Set the images and labels in the cell with the data from the model object
         cell!.textLabel?.text = studentForRow.firstName + " " + studentForRow.lastName
@@ -73,9 +73,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     /// When the table row is selected, open Safari to the student's link
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let studentUrl = self.appDelegate.studentsInfo[indexPath.row].mediaURL {
-            UIApplication.sharedApplication().openURL(NSURL(string: studentUrl)!)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let studentUrl = self.appDelegate.studentsInfo[(indexPath as NSIndexPath).row].mediaURL {
+            UIApplication.shared.openURL(URL(string: studentUrl)!)
         } else {
             self.alertView("Student has not assigned a URL")
         }
@@ -105,27 +105,27 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
         // Reload the data
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.tableView.reloadData()
         })
     }
     
     // MARK: - Segues and Alerts
     
-    func segue(nextVC: String) {
-        dispatch_async(dispatch_get_main_queue(), {
+    func segue(_ nextVC: String) {
+        DispatchQueue.main.async(execute: {
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier(nextVC)
-            self.presentViewController(nextVC, animated: true, completion: nil)
+            let nextVC = storyboard.instantiateViewController(withIdentifier: nextVC)
+            self.present(nextVC, animated: true, completion: nil)
         })
     }
     
-    func alertView(message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .Alert)
-            let dismiss = UIAlertAction(title: "Dismiss", style: .Default, handler: nil)
+    func alertView(_ message: String) {
+        DispatchQueue.main.async(execute: {
+            let alertController = UIAlertController(title: "Error!", message: message, preferredStyle: .alert)
+            let dismiss = UIAlertAction(title: "Dismiss", style: .default, handler: nil)
             alertController.addAction(dismiss)
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         })
     }
 
