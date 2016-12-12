@@ -13,34 +13,31 @@ class ParseClient: NSObject {
     
     // MARK: - POST
     
-    class func postStudentData(studentLink: String, mapString: String, latitude: Double, longitude: Double,
-        completionHandler: (success: Bool, errorString: String?) -> Void) {
+    class func postStudentData(_ studentLink: String, mapString: String, latitude: Double, longitude: Double,
+        completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Get the App Delegate to further use the globals
-        let object = UIApplication.sharedApplication().delegate
+        let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
         
         // 2. Build the URL
         let urlString = ParseClient.Constants.BaseURLSecure + ParseClient.Methods.StudentLocation
-        let url = NSURL(string: urlString)!
+        let url = URL(string: urlString)!
         
         // 3. Configure the request
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
         request.addValue(ParseClient.Constants.ParseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(ParseClient.Constants.RESTAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = "{\"uniqueKey\": \"\(appDelegate.key)\", \"firstName\": \"\(appDelegate.firstName)\", \"lastName\": \"\(appDelegate.lastName)\",\"mapString\": \"\(mapString)\", \"mediaURL\": \"\(studentLink)\",\"latitude\": \(latitude), \"longitude\": \(longitude)}".dataUsingEncoding(NSUTF8StringEncoding)
+        request.httpBody = "{\"uniqueKey\": \"\(appDelegate.key)\", \"firstName\": \"\(appDelegate.firstName)\", \"lastName\": \"\(appDelegate.lastName)\",\"mapString\": \"\(mapString)\", \"mediaURL\": \"\(studentLink)\",\"latitude\": \(latitude), \"longitude\": \(longitude)}".data(using: String.Encoding.utf8)
         
         // 4. Make the request
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, error in
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
             
             if error != nil {
-                completionHandler(
-                    success: false,
-                    errorString: ParseClient.Constants.FailedConnection
-                )
+                completionHandler(false, ParseClient.Constants.FailedConnection)
                 return
             }
             
@@ -48,19 +45,16 @@ class ParseClient: NSObject {
             Helpers.parseJSONWithCompletionHandler(data!) { result, error in
                 
                 if error != nil {
-                    completionHandler(
-                        success: false,
-                        errorString: ParseClient.Constants.ParsingError
-                    )
+                    completionHandler(false, ParseClient.Constants.ParsingError)
                     return
                 }
                 
                 // 6. Use the data
-                if let _ = result!.valueForKey(ParseClient.JSONResponseKeys.ObjectID) as? String {
-                    completionHandler(success: true, errorString: nil)
+                if let _ = result!.value(forKey: ParseClient.JSONResponseKeys.ObjectID) as? String {
+                    completionHandler(true, nil)
                 }
             }
-        }
+        }) 
         
         // 7. Start the request
         task.resume()
@@ -69,27 +63,27 @@ class ParseClient: NSObject {
     
     // MARK: - GET
     
-    class func getStudentData(completionHandler: (result: [StudentInfo]?, error: String?) -> Void) {
+    class func getStudentData(_ completionHandler: @escaping (_ result: [StudentInfo]?, _ error: String?) -> Void) {
         
         // 1. Set the parameters
         let methodParameters = [ParseClient.ParameterKeys.Limit: ParseClient.ParameterValues.Limit]
         
         // 2. Build the URL
         let urlString = ParseClient.Constants.BaseURLSecure + ParseClient.Methods.StudentLocation +
-            Helpers.escapedParameters(methodParameters)
-        _ = NSURL(string: urlString)!
+            Helpers.escapedParameters(methodParameters as [String : AnyObject])
+        _ = URL(string: urlString)!
         
         // 3. Configure the request
-        let request = NSMutableURLRequest(URL: NSURL(string: urlString)!)
+        let request = NSMutableURLRequest(url: URL(string: urlString)!)
         request.addValue(ParseClient.Constants.ParseApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(ParseClient.Constants.RESTAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         // 4. Make the request
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, downloadError in
             
             if downloadError != nil {
-                completionHandler(result: nil, error: ParseClient.Constants.FailedConnection)
+                completionHandler(nil, ParseClient.Constants.FailedConnection)
                 return
             }
             
@@ -97,16 +91,16 @@ class ParseClient: NSObject {
             Helpers.parseJSONWithCompletionHandler(data!) { result, error in
                 
                 if error != nil {
-                    completionHandler(result: nil, error: error)
+                    completionHandler(nil, error)
                     return
                 }
                 
                 // 6. Use the data
-                let studentsArray: [[String:AnyObject]] = (result?.valueForKey("results") as? [[String:AnyObject]])!
+                let studentsArray: [[String:AnyObject]] = (result?.value(forKey: "results") as? [[String:AnyObject]])!
                 let studentsInfo: [StudentInfo] = StudentInfo.studentInfoFromResults(studentsArray)
-                completionHandler(result: studentsInfo, error: nil)
+                completionHandler(studentsInfo, nil)
             }
-        }
+        }) 
         
         // 7. Start the request
         task.resume()

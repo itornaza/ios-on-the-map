@@ -13,11 +13,11 @@ class UdacityClient: NSObject {
     
     // MARK: - POST
     
-    class func authenticate(email: String, password: String,
-        completionHandler: (success: Bool, errorString: String?) -> Void) {
+    class func authenticate(_ email: String, password: String,
+        completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
 
         // Get the App Delegate
-        let object = UIApplication.sharedApplication().delegate
+        let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
         
         // 1. Set the parameters
@@ -28,33 +28,33 @@ class UdacityClient: NSObject {
         
         // 2. Build the URL
         let urlString = UdacityClient.Constants.BaseURLSecure + UdacityClient.Methods.Session +
-            Helpers.escapedParameters(methodParameters)
-        let url = NSURL(string: urlString)!
+            Helpers.escapedParameters(methodParameters as [String : AnyObject])
+        let url = URL(string: urlString)!
         
         // 3. Configure the request
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = "{\"udacity\": {\"username\": \"\(email)\", \"password\": \"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
+        request.httpBody = "{\"udacity\": {\"username\": \"\(email)\", \"password\": \"\(password)\"}}".data(using: String.Encoding.utf8)
         
         // 4. Make the request
-        let session = NSURLSession.sharedSession()
-        let task =  session.dataTaskWithRequest(request) { data, response, downloadError in
+        let session = URLSession.shared
+        let task =  session.dataTask(with: request as URLRequest, completionHandler: { data, response, downloadError in
             
             if let _ = downloadError {
                 
                 // Authentication failed due to connection issues
                 completionHandler(
-                    success: UdacityClient.AuthenticationStatus.Failure,
-                    errorString: UdacityClient.AuthenticationStatus.FailedConnection
+                    UdacityClient.AuthenticationStatus.Failure,
+                    UdacityClient.AuthenticationStatus.FailedConnection
                 )
                 return
                 
             } else {
 
                 // Get rid of the first 5 characters that Udacity places for security
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
+                let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
                 
                 // 5. Parse the data
                 Helpers.parseJSONWithCompletionHandler(newData) { result, error in
@@ -71,8 +71,8 @@ class UdacityClient: NSObject {
                     }
                     
                     // Authentication success
-                    if let account = result.valueForKey(UdacityClient.JSONResponseKeys.Account) as? NSDictionary {
-                        if let key = account.valueForKey(UdacityClient.JSONResponseKeys.Key) as? String {
+                    if let account = result.value(forKey: UdacityClient.JSONResponseKeys.Account) as? NSDictionary {
+                        if let key = account.value(forKey: UdacityClient.JSONResponseKeys.Key) as? String {
                             
                             // Get the key and assign it to the app Delegate
                             appDelegate.key = key
@@ -94,7 +94,7 @@ class UdacityClient: NSObject {
                         }
                         
                     // Authentication failed due to invalid credentials or non existing account
-                    } else if let errorStatus = result.valueForKey(UdacityClient.JSONResponseKeys.Status) as? Int {
+                    } else if let errorStatus = result.value(forKey: UdacityClient.JSONResponseKeys.Status) as? Int {
                         if errorStatus == UdacityClient.JSONResponseKeys.ErrorStatus {
                             completionHandler(
                                 success: UdacityClient.AuthenticationStatus.Failure,
@@ -104,7 +104,7 @@ class UdacityClient: NSObject {
                     }
                 }
             }
-        }
+        }) 
         
         // 7. Start the request
         task.resume()
@@ -112,10 +112,10 @@ class UdacityClient: NSObject {
 
     // MARK: - Get
     
-    class func getUserData(completionHandler: (success: Bool, errorString: String?) -> Void) {
+    class func getUserData(_ completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
         // Get the App Delegate
-        let object = UIApplication.sharedApplication().delegate
+        let object = UIApplication.shared.delegate
         let appDelegate = object as! AppDelegate
         
         // 1. Set the parameters
@@ -123,25 +123,22 @@ class UdacityClient: NSObject {
         // 2. Build the URL
         let urlString = UdacityClient.Constants.BaseURLSecure + UdacityClient.Methods.Users
             + "/\(appDelegate.key)"
-        let url = NSURL(string: urlString)!
+        let url = URL(string: urlString)!
         
         // 3. Configure the request
-        let request = NSMutableURLRequest(URL: url)
+        let request = NSMutableURLRequest(url: url)
         
         // 4. Make the request
-        let session = NSURLSession.sharedSession()
-        let task =  session.dataTaskWithRequest(request) { data, response, downloadError in
+        let session = URLSession.shared
+        let task =  session.dataTask(with: request as URLRequest, completionHandler: { data, response, downloadError in
             
             if downloadError != nil {
-                completionHandler(
-                    success: false,
-                    errorString: UdacityClient.AuthenticationStatus.FailedConnection
-                )
+                completionHandler(false, UdacityClient.AuthenticationStatus.FailedConnection)
                 return
             }
             
             // Get rid of the first 5 characters that Udacity places for security
-            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
+            let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
             
             // 5. Parse the data
             Helpers.parseJSONWithCompletionHandler(newData) { result, error in
@@ -153,9 +150,9 @@ class UdacityClient: NSObject {
                 }
                 
                 // Get the first and last name of the student
-                if let user = result.valueForKey(UdacityClient.JSONResponseKeys.User) as? NSDictionary {
-                    if let firstName = user.valueForKey(UdacityClient.JSONResponseKeys.FirstName) as? String {
-                        if let lastName = user.valueForKey(UdacityClient.JSONResponseKeys.LastName) as? String {
+                if let user = result.value(forKey: UdacityClient.JSONResponseKeys.User) as? NSDictionary {
+                    if let firstName = user.value(forKey: UdacityClient.JSONResponseKeys.FirstName) as? String {
+                        if let lastName = user.value(forKey: UdacityClient.JSONResponseKeys.LastName) as? String {
                             appDelegate.lastName = lastName
                             appDelegate.firstName = firstName
                             completionHandler(success: true, errorString: nil)
@@ -169,7 +166,7 @@ class UdacityClient: NSObject {
                     return
                 }
             }
-        }
+        }) 
         
         // 7. Start the request
         task.resume()

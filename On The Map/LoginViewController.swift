@@ -33,7 +33,7 @@ class LoginViewController: UIViewController {
     
     // MARK: - Actions
     
-    @IBAction func loginButtonTouch(sender: AnyObject) {
+    @IBAction func loginButtonTouch(_ sender: AnyObject) {
         
         // Require username
         if emailTextField.text!.isEmpty {
@@ -56,8 +56,8 @@ class LoginViewController: UIViewController {
     }
     
     /// Open Safari to the udacity link
-    @IBAction func SignUpButtonTouch(sender: AnyObject) {
-        UIApplication.sharedApplication().openURL(NSURL(string:UdacityClient.Constants.UdacitySignUp)!)
+    @IBAction func SignUpButtonTouch(_ sender: AnyObject) {
+        UIApplication.shared.openURL(URL(string:UdacityClient.Constants.UdacitySignUp)!)
     }
     
     // MARK: - Methods
@@ -66,7 +66,7 @@ class LoginViewController: UIViewController {
     func resetAppDelegate() {
         
         // Get the App Delegate
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         // Reset the udacity student data
         appDelegate.key = ""
@@ -74,7 +74,7 @@ class LoginViewController: UIViewController {
         appDelegate.lastName = ""
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+    func handleSingleTap(_ recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
     
@@ -97,12 +97,12 @@ class LoginViewController: UIViewController {
         }
     }
     
-    func alertView(title: String, message: String) {
-        dispatch_async(dispatch_get_main_queue(), {
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let tryAgain = UIAlertAction(title: "Try again", style: .Default, handler: nil)
+    func alertView(_ title: String, message: String) {
+        DispatchQueue.main.async(execute: {
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let tryAgain = UIAlertAction(title: "Try again", style: .default, handler: nil)
             alertController.addAction(tryAgain)
-            self.presentViewController(alertController, animated: true) {
+            self.present(alertController, animated: true) {
                 
                 // Reset only the password field, most probable user mishap
                 self.passwordTextField.text = ""
@@ -112,11 +112,11 @@ class LoginViewController: UIViewController {
     
     /// Segue to the "Map and Table Tabbed View" on the main thread (UIKit restriction)
     func showMapAndTableTabbedView() {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             let storyboard = UIStoryboard (name: "Main", bundle: nil)
-            let nextVC = storyboard.instantiateViewControllerWithIdentifier("MapAndTableTabbedView")
+            let nextVC = storyboard.instantiateViewController(withIdentifier: "MapAndTableTabbedView")
                 as! UITabBarController
-            self.presentViewController(nextVC, animated: false, completion: nil)
+            self.present(nextVC, animated: false, completion: nil)
         })
     }
 }
