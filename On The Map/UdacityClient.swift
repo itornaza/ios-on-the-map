@@ -54,7 +54,9 @@ class UdacityClient: NSObject {
             } else {
 
                 // Get rid of the first 5 characters that Udacity places for security
-                let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+                
+                // TODO (Check conversion): let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+                let newData = data!.subdata(in: 5..<(data!.count - 5))
                 
                 // 5. Parse the data
                 Helpers.parseJSONWithCompletionHandler(newData) { result, error in
@@ -64,14 +66,14 @@ class UdacityClient: NSObject {
                     // Authentication failed due to parsing issues
                     if error != nil {
                         completionHandler(
-                            success: UdacityClient.AuthenticationStatus.Failure,
-                            errorString: UdacityClient.AuthenticationStatus.ParseError
+                            UdacityClient.AuthenticationStatus.Failure,
+                            UdacityClient.AuthenticationStatus.ParseError
                         )
                         return
                     }
                     
                     // Authentication success
-                    if let account = result.value(forKey: UdacityClient.JSONResponseKeys.Account) as? NSDictionary {
+                    if let account = result?.value(forKey: UdacityClient.JSONResponseKeys.Account) as? NSDictionary {
                         if let key = account.value(forKey: UdacityClient.JSONResponseKeys.Key) as? String {
                             
                             // Get the key and assign it to the app Delegate
@@ -80,25 +82,25 @@ class UdacityClient: NSObject {
                             self.getUserData(){ success, errorString in
                                 if errorString != nil {
                                     completionHandler(
-                                        success: UdacityClient.AuthenticationStatus.Failure,
-                                        errorString: errorString
+                                        UdacityClient.AuthenticationStatus.Failure,
+                                        errorString
                                     )
                                     return
                                 } else {
                                     completionHandler(
-                                        success: UdacityClient.AuthenticationStatus.Success,
-                                        errorString: nil
+                                        UdacityClient.AuthenticationStatus.Success,
+                                        nil
                                     )
                                 }
                             }
                         }
                         
                     // Authentication failed due to invalid credentials or non existing account
-                    } else if let errorStatus = result.value(forKey: UdacityClient.JSONResponseKeys.Status) as? Int {
+                    } else if let errorStatus = result?.value(forKey: UdacityClient.JSONResponseKeys.Status) as? Int {
                         if errorStatus == UdacityClient.JSONResponseKeys.ErrorStatus {
                             completionHandler(
-                                success: UdacityClient.AuthenticationStatus.Failure,
-                                errorString: UdacityClient.AuthenticationStatus.InvalidCredentials)
+                                UdacityClient.AuthenticationStatus.Failure,
+                                UdacityClient.AuthenticationStatus.InvalidCredentials)
                             return
                         }
                     }
@@ -138,30 +140,31 @@ class UdacityClient: NSObject {
             }
             
             // Get rid of the first 5 characters that Udacity places for security
-            let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+            // TODO (Check conversion): let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+            // let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+            let newData = data!.subdata(in: 5..<(data!.count - 5))
             
             // 5. Parse the data
             Helpers.parseJSONWithCompletionHandler(newData) { result, error in
 
                 // 6. Use the data
                 if error != nil {
-                    completionHandler(success: false, errorString: error)
+                    completionHandler(false, error)
                     return
                 }
                 
                 // Get the first and last name of the student
-                if let user = result.value(forKey: UdacityClient.JSONResponseKeys.User) as? NSDictionary {
+                if let user = result?.value(forKey: UdacityClient.JSONResponseKeys.User) as? NSDictionary {
                     if let firstName = user.value(forKey: UdacityClient.JSONResponseKeys.FirstName) as? String {
                         if let lastName = user.value(forKey: UdacityClient.JSONResponseKeys.LastName) as? String {
                             appDelegate.lastName = lastName
                             appDelegate.firstName = firstName
-                            completionHandler(success: true, errorString: nil)
+                            completionHandler(true, nil)
                         }
                     }
                 } else {
                     completionHandler(
-                        success: false,
-                        errorString: UdacityClient.AuthenticationStatus.StudentDataFailed
+                        false, UdacityClient.AuthenticationStatus.StudentDataFailed
                     )
                     return
                 }
