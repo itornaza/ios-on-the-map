@@ -141,7 +141,6 @@ class UdacityClient: NSObject {
             
             // Get rid of the first 5 characters that Udacity places for security
             // TODO (Check conversion): let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
-            // let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
             let newData = data!.subdata(in: 5..<(data!.count - 5))
             
             // 5. Parse the data
