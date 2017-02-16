@@ -54,11 +54,11 @@ class UdacityClient: NSObject {
             } else {
 
                 // Get rid of the first 5 characters that Udacity places for security
-                
-                // TODO (Check conversion): let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
                 let newData = data!.subdata(in: 5..<(data!.count - 5))
                 
                 // 5. Parse the data
+                
+                // TODO: Debug
                 Helpers.parseJSONWithCompletionHandler(newData) { result, error in
                 
                     // 6. Use the data!
@@ -112,7 +112,7 @@ class UdacityClient: NSObject {
         task.resume()
     }
 
-    // MARK: - Get
+    // MARK: - GET
     
     class func getUserData(_ completionHandler: @escaping (_ success: Bool, _ errorString: String?) -> Void) {
         
@@ -140,7 +140,7 @@ class UdacityClient: NSObject {
             }
             
             // Get rid of the first 5 characters that Udacity places for security
-            // TODO (Check conversion): let newData = data!.subdata(in: NSMakeRange(5, data!.count - 5))
+            // TODO: Debug
             let newData = data!.subdata(in: 5..<(data!.count - 5))
             
             // 5. Parse the data
