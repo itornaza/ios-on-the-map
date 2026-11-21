@@ -2,7 +2,7 @@
 //  InformationPostingViewController.swift
 //  On The Map
 //
-//  Created by Ioannis Tornazakis on 25/4/15.
+//  Created by ion- on 25/4/15.
 //  Copyright (c) 2015 polarbear.gr. All rights reserved.
 //
 

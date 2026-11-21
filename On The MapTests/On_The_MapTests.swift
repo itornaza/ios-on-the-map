@@ -2,7 +2,7 @@
 //  On_The_MapTests.swift
 //  On The MapTests
 //
-//  Created by Ioannis Tornazakis on 20/4/15.
+//  Created by ion- on 20/4/15.
 //  Copyright (c) 2015 polarbear.gr. All rights reserved.
 //
 

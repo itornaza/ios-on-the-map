@@ -2,7 +2,7 @@
 //  StudentInfo.swift
 //  On The Map
 //
-//  Created by Ioannis Tornazakis on 22/4/15.
+//  Created by ion- on 22/4/15.
 //  Copyright (c) 2015 polarbear.gr. All rights reserved.
 //
 
